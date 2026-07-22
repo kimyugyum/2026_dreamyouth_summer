@@ -15,8 +15,8 @@ export function Home({ onCheckIn, onCueSheet }: Props) {
       <div className="home-actions">
         <button className="home-btn home-btn-cuesheet" onClick={onCueSheet}>
           <span className="home-btn-icon">📋</span>
-          <span className="home-btn-label">전체 큐시트</span>
-          <span className="home-btn-desc">누구나 볼 수 있는 행사 진행 순서</span>
+          <span className="home-btn-label">수련회 일정표</span>
+          <span className="home-btn-desc">시간별 진행 순서</span>
         </button>
         <button className="home-btn home-btn-checkin" onClick={onCheckIn}>
           <span className="home-btn-icon">✅</span>
