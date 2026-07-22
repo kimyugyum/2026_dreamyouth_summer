@@ -63,3 +63,27 @@ export interface ParticipantEditData {
   comment?: string;
   rrn?: string;
 }
+
+export interface CueItem {
+  id: string;
+  day: string;
+  order: number;
+  time: string;
+  title: string;
+  subtitle?: string;
+  place?: string;
+  owner?: string;
+  notes: string[];
+  nextPrep: string[];
+  remark: string[];
+}
+
+export type CueItemData = Omit<CueItem, 'id'>;
+
+export interface GetCueSheetResult {
+  items: CueItem[];
+}
+
+export interface AddCueItemResult {
+  id: string;
+}

@@ -125,7 +125,7 @@ function App() {
     return (
       <>
         {homeView === 'cuesheet' ? (
-          <CueSheet onBack={() => setHomeView('home')} />
+          <CueSheet onBack={() => setHomeView('home')} toast={toast} />
         ) : (
           <Home onCheckIn={() => setShowLogin(true)} onCueSheet={() => setHomeView('cuesheet')} />
         )}
