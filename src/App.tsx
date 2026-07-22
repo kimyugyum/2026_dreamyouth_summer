@@ -6,6 +6,8 @@ import { useParticipants } from './hooks/useParticipants';
 import { useToast } from './hooks/useToast';
 import { matches } from './utils/search';
 import { PAGE_SIZE } from './constants';
+import { Home } from './components/Home';
+import { CueSheet } from './components/CueSheet';
 import { LoginScreen } from './components/LoginScreen';
 import { Header } from './components/Header';
 import { StatsGrid } from './components/StatsGrid';
@@ -23,6 +25,8 @@ function App() {
   const auth = useAuth();
   const { toasts, toast } = useToast();
 
+  const [homeView, setHomeView] = useState<'home' | 'cuesheet'>('home');
+  const [showLogin, setShowLogin] = useState(false);
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
@@ -77,6 +81,13 @@ function App() {
     if (confirm('담당자를 변경하시겠습니까? 다시 로그인해야 합니다.')) auth.clearSession();
   };
 
+  const handleGoHome = () => {
+    if (confirm('홈 화면으로 이동하시겠습니까? 다시 로그인해야 합니다.')) {
+      setHomeView('home');
+      auth.clearSession();
+    }
+  };
+
   const handleRefresh = async () => {
     await loadData();
     toast('success', '최신 데이터를 불러왔습니다.');
@@ -113,7 +124,21 @@ function App() {
   if (!auth.loggedIn) {
     return (
       <>
-        <LoginScreen onLogin={auth.login} toast={toast} />
+        {homeView === 'cuesheet' ? (
+          <CueSheet onBack={() => setHomeView('home')} />
+        ) : (
+          <Home onCheckIn={() => setShowLogin(true)} onCueSheet={() => setHomeView('cuesheet')} />
+        )}
+        <Modal show={showLogin} onClose={() => setShowLogin(false)}>
+          <LoginScreen
+            onLogin={(token, staffName, expiresAt) => {
+              setShowLogin(false);
+              auth.login(token, staffName, expiresAt);
+            }}
+            onClose={() => setShowLogin(false)}
+            toast={toast}
+          />
+        </Modal>
         <ToastContainer toasts={toasts} />
       </>
     );
@@ -121,7 +146,13 @@ function App() {
 
   return (
     <>
-      <Header staffName={auth.staffName} syncedAt={syncedAt} onRefresh={handleRefresh} onChangeStaff={handleChangeStaff} />
+      <Header
+        staffName={auth.staffName}
+        syncedAt={syncedAt}
+        onRefresh={handleRefresh}
+        onChangeStaff={handleChangeStaff}
+        onGoHome={handleGoHome}
+      />
 
       {stats ? <StatsGrid stats={stats} activeFilters={filters} hasQuery={!!query} onSelect={handleStatSelect} /> : null}
 

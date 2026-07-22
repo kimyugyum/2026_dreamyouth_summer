@@ -5,17 +5,18 @@ interface Props {
   syncedAt: string;
   onRefresh: () => void;
   onChangeStaff: () => void;
+  onGoHome: () => void;
 }
 
-export function Header({ staffName, syncedAt, onRefresh, onChangeStaff }: Props) {
+export function Header({ staffName, syncedAt, onRefresh, onChangeStaff, onGoHome }: Props) {
   const today = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
 
   return (
     <header className="header">
-      <div>
+      <button className="h-logo" onClick={onGoHome}>
         <div className="h-title">{EVENT_NAME}</div>
         <div className="h-sub">{EVENT_SUBTITLE}</div>
-      </div>
+      </button>
       <div className="h-meta">
         <button className="staff-chip" onClick={onChangeStaff}>
           👤 {staffName || '담당자'}

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { api } from '../api/client';
 import type { LoginResult, ApiError } from '../api/types';
 import { getStaff } from '../hooks/useAuth';
-import { EVENT_NAME, EVENT_SUBTITLE } from '../constants';
 
 interface Props {
   onLogin: (token: string, staffName: string, expiresAt: number) => void;
+  onClose: () => void;
   toast: (type: 'success' | 'error', msg: string) => void;
 }
 
-export function LoginScreen({ onLogin, toast }: Props) {
+export function LoginScreen({ onLogin, onClose, toast }: Props) {
   const [name, setName] = useState(getStaff());
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -33,12 +33,14 @@ export function LoginScreen({ onLogin, toast }: Props) {
   };
 
   return (
-    <div className="login-wrap">
-      <div className="login-logo">
-        <div className="h-title">{EVENT_NAME}</div>
-        <div className="h-sub">{EVENT_SUBTITLE}</div>
+    <>
+      <div className="m-head">
+        <div className="m-title">체크인 로그인</div>
+        <button className="m-x" onClick={onClose} type="button">
+          ✕
+        </button>
       </div>
-      <form className="card login-card" onSubmit={submit}>
+      <form className="login-card" onSubmit={submit}>
         <p className="login-hint">오늘 접수를 담당하는 선생님 정보를 입력해주세요.</p>
         <input
           type="text"
@@ -58,6 +60,6 @@ export function LoginScreen({ onLogin, toast }: Props) {
           {busy ? <span className="spin">◌</span> : null} {busy ? '확인 중...' : '시작하기'}
         </button>
       </form>
-    </div>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 export const EVENT_NAME = 'DREAM YOUTH';
-export const EVENT_SUBTITLE = 'CHECK-IN SYSTEM';
+export const EVENT_SUBTITLE = '2026 SUMMER CAMP';
 export const GRADES = ['초4', '초5', '초6', '중1', '중2', '중3', '고1', '고2', '고3'];
 export const DEPARTMENTS = [
   '1️⃣드림유스 1부 (주로 고등학생)',
