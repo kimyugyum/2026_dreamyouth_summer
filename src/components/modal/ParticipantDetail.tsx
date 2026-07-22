@@ -25,7 +25,6 @@ export function ParticipantDetail({ p, busy, onClose, onEdit, onSetBadge }: Prop
       <div className="m-head">
         <div>
           <div className="m-title">{p.name}</div>
-          <div className="p-id">{p.id}</div>
         </div>
         <button className="m-x" onClick={onClose}>
           ✕
@@ -62,7 +61,7 @@ export function ParticipantDetail({ p, busy, onClose, onEdit, onSetBadge }: Prop
           </div>
         </div>
       ) : (
-        <button className="btn btn-issue" style={{ marginBottom: 14 }} disabled={busy} onClick={() => onSetBadge(p, true)}>
+        <button className="btn btn-issue" style={{ marginBottom: 22 }} disabled={busy} onClick={() => onSetBadge(p, true)}>
           {busy ? <span className="spin">◌</span> : '🏷️'} 명찰 배부 완료
         </button>
       )}
@@ -85,7 +84,7 @@ export function ParticipantDetail({ p, busy, onClose, onEdit, onSetBadge }: Prop
           <DItem label="마지막 수정" value={(p.updatedAt || '') + (p.updatedBy ? ' · ' + p.updatedBy : '')} full muted />
         ) : null}
       </div>
-      <button className="btn btn-ghost" style={{ width: '100%' }} onClick={onEdit}>
+      <button className="btn btn-ghost" style={{ width: '100%', marginTop: 8 }} onClick={onEdit}>
         ✏️ 정보 수정
       </button>
     </>

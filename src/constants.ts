@@ -7,10 +7,4 @@ export const DEPARTMENTS = [
   '새로 왔어요!',
 ];
 export const REFRESH_MS = 60000;
-
-export const FILTER_DEFS: [string, string][] = [
-  ['PAID', '입금 완료'],
-  ['UNPAID', '미입금'],
-  ['ISSUED', '명찰 배부'],
-  ['NOT_ISSUED', '명찰 미배부'],
-];
+export const PAGE_SIZE = 10;

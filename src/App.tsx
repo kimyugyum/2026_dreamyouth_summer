@@ -5,12 +5,13 @@ import { useAuth, getToken, getStaff } from './hooks/useAuth';
 import { useParticipants } from './hooks/useParticipants';
 import { useToast } from './hooks/useToast';
 import { matches } from './utils/search';
+import { PAGE_SIZE } from './constants';
 import { LoginScreen } from './components/LoginScreen';
 import { Header } from './components/Header';
 import { StatsGrid } from './components/StatsGrid';
 import { SearchBar } from './components/SearchBar';
-import { FilterChips } from './components/FilterChips';
 import { ParticipantList } from './components/ParticipantList';
+import { Pagination } from './components/Pagination';
 import { Fab } from './components/Fab';
 import { ToastContainer } from './components/ToastContainer';
 import { Modal } from './components/modal/Modal';
@@ -24,6 +25,7 @@ function App() {
 
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -48,7 +50,22 @@ function App() {
     });
   }, [participants, filters, query]);
 
-  const selectedParticipant = selectedId ? participants.find((p) => p.id === selectedId) ?? null : null;
+  const pageCount = Math.max(1, Math.ceil(filteredList.length / PAGE_SIZE));
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, filters]);
+
+  useEffect(() => {
+    if (page > pageCount) setPage(pageCount);
+  }, [page, pageCount]);
+
+  const pagedList = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredList.slice(start, start + PAGE_SIZE);
+  }, [filteredList, page]);
+
+  const selectedParticipant = selectedId !== null ? participants.find((p) => p.id === selectedId) ?? null : null;
 
   const closeModal = () => {
     setSelectedId(null);
@@ -72,25 +89,6 @@ function App() {
       setFilters(new Set());
       setQuery('새친구');
     } else setFilters(new Set([key]));
-  };
-
-  const handleFilterToggle = (key: string) => {
-    if (key === 'CLEAR') {
-      setFilters(new Set());
-      return;
-    }
-    setFilters((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else {
-        next.add(key);
-        if (key === 'PAID') next.delete('UNPAID');
-        if (key === 'UNPAID') next.delete('PAID');
-        if (key === 'ISSUED') next.delete('NOT_ISSUED');
-        if (key === 'NOT_ISSUED') next.delete('ISSUED');
-      }
-      return next;
-    });
   };
 
   const handleSetBadge = async (p: Participant, issue: boolean) => {
@@ -128,10 +126,9 @@ function App() {
       {stats ? <StatsGrid stats={stats} activeFilters={filters} hasQuery={!!query} onSelect={handleStatSelect} /> : null}
 
       <SearchBar query={query} onChange={setQuery} />
-      <FilterChips filters={filters} onToggle={handleFilterToggle} />
 
       <ParticipantList
-        list={filteredList}
+        list={pagedList}
         loading={loading}
         error={error}
         onSelect={(id) => {
@@ -140,6 +137,8 @@ function App() {
         }}
         onRetry={() => loadData()}
       />
+
+      {!loading && !error ? <Pagination page={page} pageCount={pageCount} onChange={setPage} /> : null}
 
       <Fab onClick={() => setAdding(true)} />
 
